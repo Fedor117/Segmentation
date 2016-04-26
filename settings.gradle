@@ -1,0 +1,4 @@
+rootProject.name = 'by.bsuir.iit.valiavko.ipr.segmentation'
+include 'app'
+findProject(':app')?.name = 'by.bsuir.iit.valiavko.ipr.segmentation'
+
