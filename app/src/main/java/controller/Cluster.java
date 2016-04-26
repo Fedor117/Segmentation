@@ -25,16 +25,6 @@ public class Cluster {
         addPixel(rgb);
     }
 
-    public void clear() {
-        red        = 0;
-        green      = 0;
-        blue       = 0;
-        numOfRed   = 0;
-        numOfGreen = 0;
-        numOfBlue  = 0;
-        pixelCount = 0;
-    }
-
     int getId() {
         return id;
     }

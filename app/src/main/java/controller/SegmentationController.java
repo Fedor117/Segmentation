@@ -53,7 +53,6 @@ public class SegmentationController {
                 }
             }
         }
-        // create result image
         BufferedImage result = new BufferedImage(width, height,
                 BufferedImage.TYPE_INT_RGB);
 
@@ -68,9 +67,6 @@ public class SegmentationController {
     }
 
     public Cluster[] createClusters(BufferedImage image, int k) {
-        // Here the clusters are taken with specific steps,
-        // so the result looks always same with same image.
-        // You can randomize the cluster centers, if you like.
         Cluster[] result = new Cluster[k];
 
         int x = 0;
