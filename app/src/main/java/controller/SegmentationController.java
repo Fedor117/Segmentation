@@ -7,8 +7,7 @@ import java.util.Arrays;
 
 public class SegmentationController {
 
-    public static final int DEFAULT_NUM_OF_CLUSTERS = 4;
-
+    public static final int DEFAULT_NUM_OF_CLUSTERS = 2;
     public static final String PATH_TO_FILE = "app//src//main//resources//Lenna.png";
 
     private BufferedImage original;
@@ -18,7 +17,7 @@ public class SegmentationController {
     public SegmentationController(int numOfClusters) {
         original = loadImage();
 
-        if (numOfClusters == 0) {
+        if (numOfClusters == 0 || numOfClusters == 1) {
             numOfClusters = DEFAULT_NUM_OF_CLUSTERS;
         }
 

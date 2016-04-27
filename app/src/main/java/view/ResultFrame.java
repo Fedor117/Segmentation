@@ -4,20 +4,30 @@ import controller.SegmentationController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 
-public class ResultFrame extends JFrame {
+public class ResultFrame extends JFrame implements ActionListener {
 
     public static final String NAME = "Segmentation";
+    public static final String PERFORM_BTN_NAME = "Perform calculation";
+    public static final String ERROR_MESSAGE = "Check number of clusters. 3 is minimal.";
 
     private SegmentationController controller;
+    private JButton                performBtn;
+    private JTextField             clusterField;
+    private BufferedImage          inputImage;
+    private BufferedImage          resultImage;
+    private JLabel                 inputLabel = new JLabel();
+    private JLabel                 resultLabel = new JLabel();
     private JPanel                 imagePanel   = new JPanel();
-    private ArrayList<JLabel>      labels       = new ArrayList<>();
 
     public ResultFrame(SegmentationController controller) {
         super(NAME);
         this.controller = controller;
+        controller.calculate(controller.getOriginal(),
+                SegmentationController.DEFAULT_NUM_OF_CLUSTERS);
 
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Dimension dimension = toolkit.getScreenSize();
@@ -25,11 +35,28 @@ public class ResultFrame extends JFrame {
         setLocation(dimension.width / 15, dimension.height / 5);
         setSize(dimension.width / 5 * 3, dimension.height / 5 * 3);
 
+        clusterField     = new JTextField(10);
+        performBtn       = new JButton(PERFORM_BTN_NAME);
+        JPanel funcPanel = new JPanel();
+        JPanel mainPanel = new JPanel();
+
+        performBtn.addActionListener(this);
+
+        funcPanel.setLayout(new FlowLayout());
+        funcPanel.add(clusterField);
+        funcPanel.add(performBtn);
+
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(funcPanel, BorderLayout.NORTH);
+        mainPanel.add(imagePanel);
+
         imagePanel.setLayout(new FlowLayout());
+        imagePanel.add(inputLabel);
+        imagePanel.add(resultLabel);
 
         this.setImages();
         this.setDesign();
-        this.add(imagePanel);
+        this.add(mainPanel);
         this.pack();
         this.setVisible(true);
     }
@@ -48,19 +75,25 @@ public class ResultFrame extends JFrame {
     }
 
     private void setImages() {
-        ArrayList<BufferedImage> images = new ArrayList<>();
-        images.add(controller.getOriginal());
-        images.add(controller.getResult());
+        inputImage = controller.getOriginal();
+        resultImage = controller.getResult();
 
-        for (BufferedImage image: images) {
-            ImageIcon icon = new ImageIcon(image);
-            JLabel label = new JLabel();
-            label.setIcon(icon);
-            labels.add(label);
-        }
-
-        for (JLabel label : labels)
-            imagePanel.add(label);
+        inputLabel.setIcon(new ImageIcon(inputImage));
+        resultLabel.setIcon(new ImageIcon(resultImage));
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == performBtn) {
+            try {
+                this.resultImage = controller.calculate(controller.getOriginal(),
+                        Integer.parseInt(clusterField.getText()));
+                this.resultLabel.setIcon(new ImageIcon(resultImage));
+                this.repaint();
+            } catch (Exception ex) {
+                System.out.println(ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+    }
 }
